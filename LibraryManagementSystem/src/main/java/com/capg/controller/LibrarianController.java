@@ -187,23 +187,24 @@ public class LibrarianController {
 	@PostMapping(value = "/createIssueBook", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createIssueBook(@RequestBody IssueBook issueBook) throws Exception {
 		if (validLibrarian == 1) {
-			IssueBook bi = issueBookService.createIssueBook(issueBook);	
+			
 		Book book=bookService.viewBookById(issueBook.getBookId());
-		if(book.getStatus()=="Available") {
+		if(book.getStatus().equalsIgnoreCase("Available")) {
 		book.setStatus("Issued");
 		bookService.updatebook(book);
 		
 		Student st=studentService.viewStudentById(issueBook.getStudentId());
 		st.getIssueBook().add(book);	
 		studentService.updateStudent(st);
-		
+		IssueBook bi = issueBookService.createIssueBook(issueBook);	
 		return ResponseEntity.ok(bi);
 		}
 		else {
-			return ResponseEntity.ok("Not Logged in");
+			return ResponseEntity.ok("Book Not available");
+			
 		}
 		}else {
-			return ResponseEntity.ok("Book Not available");
+			return ResponseEntity.ok("Not Logged in");
 		}
 	}
 

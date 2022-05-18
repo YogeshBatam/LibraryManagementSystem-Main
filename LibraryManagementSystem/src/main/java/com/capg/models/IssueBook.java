@@ -33,7 +33,7 @@ public class IssueBook {
 	private int studentId;
 	private String dateOfIssue;
 	private String dateOfReturn;
-	private String  returnedStatus;
+	private String returnedStatus="Issued";
 	
 	private int returnId;
 

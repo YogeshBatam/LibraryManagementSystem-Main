@@ -37,7 +37,7 @@ public class Book {
 	private String bookName;
 	private String bookAuthor;
 	private String bookPublisher;
-	private String status;
+	private String status="Available";
 	@ManyToOne
 	private Student student;
 	
