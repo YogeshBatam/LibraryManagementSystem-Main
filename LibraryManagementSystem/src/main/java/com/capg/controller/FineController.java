@@ -22,7 +22,8 @@ public class FineController {
 	int validFine;
 	@Autowired
 	private FineService fineService;
-
+	
+	@Autowired
 	private BusinessLogic logic;
 
 	@PostMapping("/createFine")
