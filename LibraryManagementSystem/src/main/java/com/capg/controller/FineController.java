@@ -56,7 +56,7 @@ public class FineController {
 
 	@PutMapping("/upadatefine")
 	public ResponseEntity<?> updatefine(@RequestBody Fine fine) {
-
+		fine.setFineamount(logic.getFine(fine.getNoOfDelayDays()));
 		return ResponseEntity.ok(fineService.updateFine(fine));
 
 	}

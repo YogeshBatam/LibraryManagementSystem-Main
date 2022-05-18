@@ -353,6 +353,7 @@ public class LibrarianController {
    public ResponseEntity<?> updatefine(@RequestBody Fine fine)   
 	{  
 		if (validLibrarian == 1) {
+			fine.setFineamount(logic.getFine(fine.getNoOfDelayDays()));
 			return ResponseEntity.ok(fineService.updateFine(fine));
 		}
 		else {
