@@ -23,9 +23,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Entity
 public class ReturnBook {
 	@Id

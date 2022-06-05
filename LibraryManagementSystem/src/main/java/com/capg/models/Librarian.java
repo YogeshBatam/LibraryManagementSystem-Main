@@ -22,7 +22,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
+
 @ToString
 public class Librarian {
 	@Id

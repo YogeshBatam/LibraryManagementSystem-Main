@@ -10,4 +10,6 @@ public interface ILibrarianService {
 	public boolean validateLibrarian(String username, String password);
 	
 	public Optional<Librarian> viewByLibrarianUserName(String username, String password);
+	
+	public Librarian updateLibrarian(Librarian librarian);
 }

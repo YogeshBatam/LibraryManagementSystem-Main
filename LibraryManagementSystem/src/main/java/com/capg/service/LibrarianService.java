@@ -40,6 +40,19 @@ public class LibrarianService implements ILibrarianService {
 		return Librarian;		
 	}
 
+	@Override
+	public Librarian updateLibrarian(Librarian librarian) {
+		Librarian lib=Librarianrepo.findById(librarian.getLibrarianId()).get();
+		if(lib==null) {
+			throw new LibrarianNotFoundException("Librarian not updated");
+		}else {
+			return Librarianrepo.save(librarian);
+		}
+		
+	}
+	
+	
+
 }
 
 

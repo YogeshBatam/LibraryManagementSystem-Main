@@ -2,10 +2,13 @@ package com.capg.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.capg.exception.FineNotFoundException;
+import com.capg.exception.LibrarianNotFoundException;
 import com.capg.exception.StudentNotFoundException;
 import com.capg.models.Book;
 import com.capg.models.Fine;
@@ -32,6 +36,7 @@ import com.capg.service.StudentServiceImpl;
 
 @RestController
 @RequestMapping("/librarian")
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:4200"},allowedHeaders = "*")
 public class LibrarianController {
 	
 	private int validLibrarian = 0;
@@ -65,8 +70,29 @@ public class LibrarianController {
 		} else
 			return ResponseEntity.ok("Invalid credentials");
 	}
+	@PostMapping("/login")
+	//@CrossOrigin("http://localhost:4200")
+	public boolean doLogin(@RequestBody Librarian lib,HttpServletRequest req)throws LibrarianNotFoundException
+	{
+		String username = lib.getLibrarianUsername();
+		String password = lib.getLibrarianPassword();
+		
+		if(librarianService.validateLibrarian(username, password) == true)
+		{
+			validLibrarian = 1;
+			Librarian librarian = librarianService.viewByLibrarianUserName(username, password).get();
+
+				return true;
+		}
+		else
+		{
+			return false;
+		}
+	
+	}
 
 	@PostMapping("/addlibrarian")
+	//@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Librarian> createLibrarian(@RequestBody Librarian librarian) {
 		Librarian lib = librarianService.addLibrarian(librarian);
 		return new ResponseEntity<Librarian>(lib, HttpStatus.CREATED);
@@ -80,6 +106,14 @@ public class LibrarianController {
 		} else
 			return ResponseEntity.ok("Not Logged In");
 	}
+	
+	@PutMapping("/updatelibrarian")
+	
+	public ResponseEntity<Librarian> updateLibrarian(@RequestBody Librarian librarian) {
+		Librarian lib = librarianService.updateLibrarian(librarian);
+		return new ResponseEntity<Librarian>(lib, HttpStatus.OK);
+	}
+	
 
 // --------------Book Services------------------------------------------------------------
 	@PostMapping("/createBook")
@@ -94,48 +128,48 @@ public class LibrarianController {
 
 	@GetMapping("/viewBookById/{bookId}")
 	public ResponseEntity<?> viewBookById(@PathVariable("bookId") int bookId) {
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			Book lib = bookService.viewBookById(bookId);
 			
 			return ResponseEntity.ok(lib);
-		} else {
-			return ResponseEntity.ok("Not Logged In");
-		}
+	//	} else {
+	//		return ResponseEntity.ok("Not Logged In");
+	//	}
 	}
 
 	@GetMapping("/viewAllBook")
 	public ResponseEntity<?> viewAllBook() {
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			return ResponseEntity.ok(bookService.viewBook());
-		} else {
-			return ResponseEntity.ok("Not Logged In");
-		}
+	//	} else {
+	//		return ResponseEntity.ok("Not Logged In");
+	//	}
 	}
 
 	@PutMapping("/updateBook")
 	public ResponseEntity<?> updateBook(@RequestBody Book book) {
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			return ResponseEntity.ok(bookService.updatebook(book));
-		} else {
-			return ResponseEntity.ok("Not Logged In");
-		}
+		//} else {
+	//		return ResponseEntity.ok("Not Logged In");
+	//	}
 	}
 
 	@DeleteMapping("/deleteBook/{bookId}")
 	public void removeBook(@PathVariable("bookId") int bookId) {
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			bookService.removeBook(bookId);
-		}
+	//	}
 	}
 	
 	@GetMapping("/viewByBookName/{bookName}")
 	public ResponseEntity<?> viewByBookByName(@PathVariable("bookName") String bookName) {
-		if (validLibrarian== 1) {
+		//if (validLibrarian== 1) {
 			List<Book> books = bookService.viewByBookName(bookName);
 			return ResponseEntity.ok(books);
-		} else {
-			return ResponseEntity.ok("Not Logged In");
-		}
+	//	} else {
+	//		return ResponseEntity.ok("Not Logged In");
+	//	}
 	}
 	
 	@GetMapping("/viewByAuthorName/{bookAuthor}")
@@ -186,7 +220,7 @@ public class LibrarianController {
 //-------------------Issue Book------------------------------------------------------------------
 	@PostMapping(value = "/createIssueBook", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createIssueBook(@RequestBody IssueBook issueBook) throws Exception {
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			
 		Book book=bookService.viewBookById(issueBook.getBookId());
 		if(book.getStatus().equalsIgnoreCase("Available")) {
@@ -203,9 +237,9 @@ public class LibrarianController {
 			return ResponseEntity.ok("Book Not available");
 			
 		}
-		}else {
-			return ResponseEntity.ok("Not Logged in");
-		}
+	//	}else {
+	//		return ResponseEntity.ok("Not Logged in");
+	//	}
 	}
 
 	@GetMapping("/viewByIssueId/{bookIssueId}")
@@ -251,31 +285,31 @@ public class LibrarianController {
 	
 
 	@PostMapping("/createReturnBook")
-	public Object addReturnbook(@RequestBody ReturnBook returnBook) throws StudentNotFoundException {
+	public ResponseEntity<?> addReturnbook(@RequestBody ReturnBook returnBook) throws StudentNotFoundException {
 
-		if (validLibrarian == 1) {
+	//	if (validLibrarian == 1) {
 			
 			ReturnBook lib = returnService.createReturnBook(returnBook);
-			Book book=bookService.viewBookById(returnBook.getBookId());
-			book.setStatus("Available");
-			bookService.updatebook(book);
-			
-			Student st=studentService.viewStudentById(returnBook.getStudentId());
-			if(st.getIssueBook().contains(book)) {
-				st.getIssueBook().remove(book);
-			}
-			studentService.updateStudent(st);
-			
-			IssueBook ib=issueBookService.viewIssueBookById(returnBook.getIssuedId());
-			ib.setReturnId(returnBook.getReturnId());
-			ib.setReturnedStatus("Returned");
-			issueBookService.updatebookIssue(ib);
-			
+//			Book book=bookService.viewBookById(returnBook.getBookId());
+//			book.setStatus("Available");
+//			bookService.updatebook(book);
+//			
+//			Student st=studentService.viewStudentById(returnBook.getStudentId());
+//			if(st.getIssueBook().contains(book)) {
+//				st.getIssueBook().remove(book);
+//			}
+//			studentService.updateStudent(st);
+//			
+//			IssueBook ib=issueBookService.viewIssueBookById(returnBook.getIssuedId());
+//			ib.setReturnId(returnBook.getReturnId());
+//			ib.setReturnedStatus("Returned");
+//			issueBookService.updatebookIssue(ib);
+//			
 			
 			return ResponseEntity.ok(lib);
-		} else {
-			return ResponseEntity.ok("Not Logged In");
-		}
+		//} else {
+		//	return ResponseEntity.ok("Not Logged In");
+		//}
 	}
 
 	@GetMapping("/get/{returnbookid}")
@@ -304,6 +338,10 @@ public class LibrarianController {
 		if (validLibrarian == 1) {
 			returnService.removeReturnBook(returnbookid);
 		}
+	}
+	@GetMapping("/viewAllReturnBook")
+	public List<ReturnBook> viewAllReturnBook() {
+		return returnService.viewReturnBook();
 	}
 	
 //----------------------Fine---------------------------------------------------------
