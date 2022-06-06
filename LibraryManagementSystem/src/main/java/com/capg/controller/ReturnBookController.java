@@ -30,7 +30,7 @@ public class ReturnBookController {
 	private ReturnBookService returnService;
 
 	@PostMapping("/create")
-	public Object addReturnbook(@RequestBody ReturnBook returnBook) {
+	public ResponseEntity<?> addReturnbook(@RequestBody ReturnBook returnBook) {
 
 			ReturnBook lib = returnService.createReturnBook(returnBook);
 			return ResponseEntity.ok(lib);

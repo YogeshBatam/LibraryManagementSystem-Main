@@ -25,7 +25,7 @@ public class IssueBookService implements IIssueBookService {
 		if (repository.findById(bookIssueId).isPresent()) {
 			return repository.findById(bookIssueId).get();
 		} else {
-			throw new IssueBookRecordNotFoundException("IssueBook with id " + bookIssueId + " does not exist");
+			throw new IssueBookRecordNotFoundException("IssueBooks with id " + bookIssueId + " does not exist");
 		}
 	}
 

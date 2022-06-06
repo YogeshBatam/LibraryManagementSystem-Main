@@ -58,18 +58,18 @@ public class LibrarianController {
 	@Autowired
 	private ReturnBookService returnService;
 	
-	@GetMapping("/login/{username}/{password}")
-	public ResponseEntity<?> loginLibrarian(@PathVariable("username") String username,
-			@PathVariable("password") String password) {
-		if (librarianService.validateLibrarian(username, password) == true) {
-			validLibrarian = 1;
-			Librarian librarian = librarianService.viewByLibrarianUserName(username, password).get();
-			String welcome = "Welcome \n........................\n";
-			return ResponseEntity.ok(welcome + "Id : " + librarian.getLibrarianId() + "\nUsername : "
-					+ librarian.getLibrarianUsername());
-		} else
-			return ResponseEntity.ok("Invalid credentials");
-	}
+//	@GetMapping("/login/{username}/{password}")
+//	public ResponseEntity<?> loginLibrarian(@PathVariable("username") String username,
+//			@PathVariable("password") String password) {
+//		if (librarianService.validateLibrarian(username, password) == true) {
+//			validLibrarian = 1;
+//			Librarian librarian = librarianService.viewByLibrarianUserName(username, password).get();
+//			String welcome = "Welcome \n........................\n";
+//			return ResponseEntity.ok(welcome + "Id : " + librarian.getLibrarianId() + "\nUsername : "
+//					+ librarian.getLibrarianUsername());
+//		} else
+//			return ResponseEntity.ok("Invalid credentials");
+//	}
 	@PostMapping("/login")
 	//@CrossOrigin("http://localhost:4200")
 	public boolean doLogin(@RequestBody Librarian lib,HttpServletRequest req)throws LibrarianNotFoundException
@@ -220,7 +220,7 @@ public class LibrarianController {
 //-------------------Issue Book------------------------------------------------------------------
 	@PostMapping(value = "/createIssueBook", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createIssueBook(@RequestBody IssueBook issueBook) throws Exception {
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			
 		Book book=bookService.viewBookById(issueBook.getBookId());
 		if(book.getStatus().equalsIgnoreCase("Available")) {
@@ -237,9 +237,9 @@ public class LibrarianController {
 			return ResponseEntity.ok("Book Not available");
 			
 		}
-	//	}else {
-	//		return ResponseEntity.ok("Not Logged in");
-	//	}
+		}else {
+			return ResponseEntity.ok("Not Logged in");
+		}
 	}
 
 	@GetMapping("/viewByIssueId/{bookIssueId}")
@@ -287,29 +287,29 @@ public class LibrarianController {
 	@PostMapping("/createReturnBook")
 	public ResponseEntity<?> addReturnbook(@RequestBody ReturnBook returnBook) throws StudentNotFoundException {
 
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			
 			ReturnBook lib = returnService.createReturnBook(returnBook);
-//			Book book=bookService.viewBookById(returnBook.getBookId());
-//			book.setStatus("Available");
-//			bookService.updatebook(book);
-//			
-//			Student st=studentService.viewStudentById(returnBook.getStudentId());
-//			if(st.getIssueBook().contains(book)) {
-//				st.getIssueBook().remove(book);
-//			}
-//			studentService.updateStudent(st);
-//			
-//			IssueBook ib=issueBookService.viewIssueBookById(returnBook.getIssuedId());
-//			ib.setReturnId(returnBook.getReturnId());
-//			ib.setReturnedStatus("Returned");
-//			issueBookService.updatebookIssue(ib);
+			Book book=bookService.viewBookById(returnBook.getBookId());
+			book.setStatus("Available");
+			bookService.updatebook(book);
+			
+			Student st=studentService.viewStudentById(returnBook.getStudentId());
+			if(st.getIssueBook().contains(book)) {
+				st.getIssueBook().remove(book);
+			}
+			studentService.updateStudent(st);
+			
+			IssueBook ib=issueBookService.viewIssueBookById(returnBook.getIssuedId());
+			ib.setReturnId(returnBook.getReturnId());
+			ib.setReturnedStatus("Returned");
+			issueBookService.updatebookIssue(ib);
 //			
 			
 			return ResponseEntity.ok(lib);
-		//} else {
-		//	return ResponseEntity.ok("Not Logged In");
-		//}
+		} else {
+			return ResponseEntity.ok("Not Logged In");
+		}
 	}
 
 	@GetMapping("/get/{returnbookid}")
@@ -340,8 +340,9 @@ public class LibrarianController {
 		}
 	}
 	@GetMapping("/viewAllReturnBook")
-	public List<ReturnBook> viewAllReturnBook() {
-		return returnService.viewReturnBook();
+	public ResponseEntity<?> viewAllReturnBook() {
+		List<ReturnBook> rb=returnService.viewReturnBook();
+		return ResponseEntity.ok(rb);
 	}
 	
 //----------------------Fine---------------------------------------------------------
