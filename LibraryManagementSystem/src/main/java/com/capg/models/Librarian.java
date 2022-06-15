@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,7 @@ public class Librarian {
 	private String librarianUsername;
 	
 	@NotBlank(message = "Password is mandatory")
+
 	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$", message="Password must contain a lowercase character, "
                                         + "a uppercase character and a digit, minimum length must be 6 characters")
 	private String librarianPassword;

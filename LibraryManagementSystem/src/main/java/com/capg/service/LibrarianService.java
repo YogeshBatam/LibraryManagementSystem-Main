@@ -18,6 +18,7 @@ public class LibrarianService implements ILibrarianService {
 	@Override
 	public Librarian addLibrarian(Librarian librarian) {
 		Librarian obj = Librarianrepo.findByLibrarianUsername(librarian.getLibrarianUsername());
+
 		if(obj != null)
 			throw new LibrarianFoundException("Librarian already created");
 		return Librarianrepo.save(librarian);

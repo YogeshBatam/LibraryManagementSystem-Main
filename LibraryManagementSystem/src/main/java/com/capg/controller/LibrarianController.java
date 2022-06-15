@@ -40,7 +40,7 @@ import com.capg.service.StudentServiceImpl;
 public class LibrarianController {
 	
 	private int validLibrarian = 0;
-	// flag variable
+	
 	int StudentId;
 	@Autowired
 	private LibrarianService librarianService;
@@ -58,18 +58,7 @@ public class LibrarianController {
 	@Autowired
 	private ReturnBookService returnService;
 	
-//	@GetMapping("/login/{username}/{password}")
-//	public ResponseEntity<?> loginLibrarian(@PathVariable("username") String username,
-//			@PathVariable("password") String password) {
-//		if (librarianService.validateLibrarian(username, password) == true) {
-//			validLibrarian = 1;
-//			Librarian librarian = librarianService.viewByLibrarianUserName(username, password).get();
-//			String welcome = "Welcome \n........................\n";
-//			return ResponseEntity.ok(welcome + "Id : " + librarian.getLibrarianId() + "\nUsername : "
-//					+ librarian.getLibrarianUsername());
-//		} else
-//			return ResponseEntity.ok("Invalid credentials");
-//	}
+	
 	@PostMapping("/login")
 	//@CrossOrigin("http://localhost:4200")
 	public boolean doLogin(@RequestBody Librarian lib,HttpServletRequest req)throws LibrarianNotFoundException
@@ -114,6 +103,17 @@ public class LibrarianController {
 		return new ResponseEntity<Librarian>(lib, HttpStatus.OK);
 	}
 	
+	public Boolean containsSequences(String uname, String pwd){
+		 
+		  Boolean b=pwd.contains(uname);
+		  return b;
+		}
+	
+	
+	
+	
+	
+	
 
 // --------------Book Services------------------------------------------------------------
 	@PostMapping("/createBook")
@@ -128,48 +128,48 @@ public class LibrarianController {
 
 	@GetMapping("/viewBookById/{bookId}")
 	public ResponseEntity<?> viewBookById(@PathVariable("bookId") int bookId) {
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			Book lib = bookService.viewBookById(bookId);
 			
 			return ResponseEntity.ok(lib);
-	//	} else {
-	//		return ResponseEntity.ok("Not Logged In");
-	//	}
+		} else {
+			return ResponseEntity.ok("Not Logged In");
+		}
 	}
 
 	@GetMapping("/viewAllBook")
 	public ResponseEntity<?> viewAllBook() {
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			return ResponseEntity.ok(bookService.viewBook());
-	//	} else {
-	//		return ResponseEntity.ok("Not Logged In");
-	//	}
+		} else {
+			return ResponseEntity.ok("Not Logged In");
+		}
 	}
 
 	@PutMapping("/updateBook")
 	public ResponseEntity<?> updateBook(@RequestBody Book book) {
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			return ResponseEntity.ok(bookService.updatebook(book));
-		//} else {
-	//		return ResponseEntity.ok("Not Logged In");
-	//	}
+		} else {
+			return ResponseEntity.ok("Not Logged In");
+		}
 	}
 
 	@DeleteMapping("/deleteBook/{bookId}")
 	public void removeBook(@PathVariable("bookId") int bookId) {
-	//	if (validLibrarian == 1) {
+		if (validLibrarian == 1) {
 			bookService.removeBook(bookId);
-	//	}
+		}
 	}
 	
 	@GetMapping("/viewByBookName/{bookName}")
 	public ResponseEntity<?> viewByBookByName(@PathVariable("bookName") String bookName) {
-		//if (validLibrarian== 1) {
+		if (validLibrarian== 1) {
 			List<Book> books = bookService.viewByBookName(bookName);
 			return ResponseEntity.ok(books);
-	//	} else {
-	//		return ResponseEntity.ok("Not Logged In");
-	//	}
+		} else {
+			return ResponseEntity.ok("Not Logged In");
+		}
 	}
 	
 	@GetMapping("/viewByAuthorName/{bookAuthor}")
